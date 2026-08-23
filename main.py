@@ -96,12 +96,13 @@ Evaluate this project idea:
 {idea}
 """
 
-    # Try multiple models if one is temporarily unavailable
     models = [
+        "gemini-3.7-flash",
         "gemini-3.6-flash",
-        "gemini-3.5-flash",
         "gemini-3.5-flash-lite"
     ]
+
+    errors = []
 
     for model in models:
 
@@ -109,30 +110,45 @@ Evaluate this project idea:
 
             try:
 
+                print(
+                    f"Trying model: {model}, attempt: {attempt + 1}",
+                    flush=True
+                )
+
                 response = client.models.generate_content(
                     model=model,
                     contents=prompt
                 )
 
                 if response.text:
+                    print(
+                        f"SUCCESS with {model}",
+                        flush=True
+                    )
+
                     return response.text
 
             except Exception as e:
 
+                error_message = str(e)
+
                 print(
-                    f"Model {model} failed "
-                    f"(attempt {attempt + 1}): {e}"
+                    f"ERROR with {model}: {error_message}",
+                    flush=True
                 )
 
-                if attempt < 1:
-                    time.sleep(3)
+                errors.append(
+                    f"{model}: {error_message}"
+                )
 
+                if attempt == 0:
+                    time.sleep(5)
+
+    # Return the actual error temporarily so we can diagnose it
     return (
-        "❌ Gemini is temporarily unavailable. "
-        "Please try again in a few minutes."
+        "Gemini API error.\\n\\n"
+        + "\\n\\n".join(errors)
     )
-
-
 # =========================
 # HOME PAGE
 # =========================
