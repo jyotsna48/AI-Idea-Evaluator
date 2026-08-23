@@ -1,1 +1,758 @@
+<!DOCTYPE html>
 
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>UK Right AI Project Evaluator</title>
+
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    background:
+        #f4f7fb;
+
+    color:
+        #172033;
+}
+
+
+header {
+
+    background:
+        #111827;
+
+    color:
+        white;
+
+    padding:
+        35px;
+
+    text-align:
+        center;
+}
+
+
+header h1 {
+
+    margin:
+        0;
+
+    font-size:
+        32px;
+}
+
+
+header p {
+
+    color:
+        #cbd5e1;
+}
+
+
+.container {
+
+    max-width:
+        1100px;
+
+    margin:
+        40px auto;
+
+    padding:
+        20px;
+}
+
+
+.card {
+
+    background:
+        white;
+
+    padding:
+        30px;
+
+    border-radius:
+        15px;
+
+    margin-bottom:
+        25px;
+
+    box-shadow:
+        0 5px 25px
+        rgba(0,0,0,0.08);
+}
+
+
+label {
+
+    display:
+        block;
+
+    font-weight:
+        bold;
+
+    margin-top:
+        18px;
+
+    margin-bottom:
+        7px;
+}
+
+
+input,
+textarea {
+
+    width:
+        100%;
+
+    padding:
+        13px;
+
+    border:
+        1px solid #d1d5db;
+
+    border-radius:
+        8px;
+
+    font-size:
+        15px;
+}
+
+
+textarea {
+
+    min-height:
+        130px;
+
+    resize:
+        vertical;
+}
+
+
+button {
+
+    width:
+        100%;
+
+    margin-top:
+        25px;
+
+    padding:
+        15px;
+
+    border:
+        none;
+
+    border-radius:
+        8px;
+
+    background:
+        #2563eb;
+
+    color:
+        white;
+
+    font-size:
+        17px;
+
+    font-weight:
+        bold;
+
+    cursor:
+        pointer;
+}
+
+
+button:hover {
+
+    background:
+        #1d4ed8;
+}
+
+
+#loading {
+
+    display:
+        none;
+
+    text-align:
+        center;
+
+    margin:
+        20px;
+
+    font-weight:
+        bold;
+}
+
+
+#result {
+
+    display:
+        none;
+}
+
+
+.score {
+
+    font-size:
+        55px;
+
+    font-weight:
+        bold;
+
+    text-align:
+        center;
+
+    color:
+        #2563eb;
+}
+
+
+.rating {
+
+    text-align:
+        center;
+
+    font-size:
+        22px;
+
+    font-weight:
+        bold;
+
+    margin:
+        15px;
+}
+
+
+.criteria {
+
+    display:
+        grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(250px, 1fr)
+        );
+
+    gap:
+        15px;
+}
+
+
+.criterion {
+
+    background:
+        #f8fafc;
+
+    padding:
+        18px;
+
+    border-radius:
+        10px;
+}
+
+
+.criterion strong {
+
+    display:
+        block;
+
+    margin-bottom:
+        8px;
+}
+
+
+li {
+
+    margin-bottom:
+        10px;
+}
+
+
+.decision {
+
+    padding:
+        15px;
+
+    border-radius:
+        8px;
+
+    text-align:
+        center;
+
+    font-weight:
+        bold;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+<h1>
+UK Right AI Project Evaluator
+</h1>
+
+<p>
+AI-powered project evaluation and scoring
+</p>
+
+</header>
+
+
+<div class="container">
+
+
+<div class="card">
+
+<h2>
+Evaluate Your Project
+</h2>
+
+
+<label>
+Project Name
+</label>
+
+<input
+id="project_name"
+placeholder="Enter project name"
+/>
+
+
+<label>
+Project Description
+</label>
+
+<textarea
+id="description"
+placeholder="Describe your project..."
+></textarea>
+
+
+<label>
+Technologies Used
+</label>
+
+<input
+id="technologies"
+placeholder="Python, Gemini, React..."
+/>
+
+
+<label>
+Target Users
+</label>
+
+<input
+id="target_users"
+placeholder="Students, farmers, businesses..."
+/>
+
+
+<button onclick="evaluateProject()">
+Evaluate Project
+</button>
+
+
+</div>
+
+
+<div id="loading">
+
+🤖 AI is evaluating your project...
+
+</div>
+
+
+<div id="result">
+
+
+<div class="card">
+
+<div
+class="score"
+id="overallScore">
+</div>
+
+<div
+class="rating"
+id="rating">
+</div>
+
+<div
+class="decision"
+id="decision">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Evaluation Scores
+</h2>
+
+<div
+id="criteria"
+class="criteria">
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Strengths
+</h2>
+
+<ul id="strengths"></ul>
+
+
+<h2>
+Weaknesses
+</h2>
+
+<ul id="weaknesses"></ul>
+
+
+<h2>
+Risks
+</h2>
+
+<ul id="risks"></ul>
+
+
+<h2>
+Recommendations
+</h2>
+
+<ul id="recommendations"></ul>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+AI Evaluator Summary
+</h2>
+
+<p id="summary"></p>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+
+async function evaluateProject() {
+
+
+const projectName =
+document.getElementById(
+    "project_name"
+).value;
+
+
+const description =
+document.getElementById(
+    "description"
+).value;
+
+
+const technologies =
+document.getElementById(
+    "technologies"
+).value;
+
+
+const targetUsers =
+document.getElementById(
+    "target_users"
+).value;
+
+
+if (!projectName || !description) {
+
+alert(
+    "Please enter project name and description."
+);
+
+return;
+
+}
+
+
+document.getElementById(
+    "loading"
+).style.display = "block";
+
+
+document.getElementById(
+    "result"
+).style.display = "none";
+
+
+try {
+
+
+const response =
+await fetch(
+    "/evaluate",
+    {
+
+        method:
+            "POST",
+
+        headers:
+        {
+            "Content-Type":
+                "application/json"
+        },
+
+        body:
+        JSON.stringify({
+
+            project_name:
+                projectName,
+
+            description:
+                description,
+
+            technologies:
+                technologies,
+
+            target_users:
+                targetUsers
+
+        })
+
+    }
+);
+
+
+const data =
+await response.json();
+
+
+if (data.error) {
+
+alert(
+    "Error: " + data.error
+);
+
+return;
+
+}
+
+
+document.getElementById(
+    "overallScore"
+).innerText =
+data.overall_score + "/100";
+
+
+document.getElementById(
+    "rating"
+).innerText =
+data.rating;
+
+
+const decision =
+document.getElementById(
+    "decision"
+);
+
+
+decision.innerText =
+data.implementation_recommended
+?
+"✓ PROJECT RECOMMENDED"
+:
+"✗ PROJECT NEEDS IMPROVEMENT";
+
+
+const criteria =
+document.getElementById(
+    "criteria"
+);
+
+
+criteria.innerHTML = "";
+
+
+for (
+    const key in data.scores
+) {
+
+
+const div =
+document.createElement(
+    "div"
+);
+
+
+div.className =
+    "criterion";
+
+
+div.innerHTML = `
+
+<strong>
+${key}
+</strong>
+
+<div>
+Score:
+${data.scores[key]}/100
+</div>
+
+<p>
+${data.explanations[key]}
+</p>
+
+`;
+
+
+criteria.appendChild(
+    div
+);
+
+}
+
+
+fillList(
+    "strengths",
+    data.strengths
+);
+
+
+fillList(
+    "weaknesses",
+    data.weaknesses
+);
+
+
+fillList(
+    "risks",
+    data.risks
+);
+
+
+fillList(
+    "recommendations",
+    data.recommendations
+);
+
+
+document.getElementById(
+    "summary"
+).innerText =
+data.summary;
+
+
+document.getElementById(
+    "result"
+).style.display =
+"block";
+
+
+}
+
+catch (error) {
+
+
+alert(
+    "Something went wrong: "
+    + error
+);
+
+
+}
+
+finally {
+
+
+document.getElementById(
+    "loading"
+).style.display =
+"none";
+
+
+}
+
+}
+
+
+function fillList(
+    id,
+    items
+) {
+
+
+const list =
+document.getElementById(id);
+
+
+list.innerHTML = "";
+
+
+items.forEach(
+    item => {
+
+        const li =
+        document.createElement(
+            "li"
+        );
+
+        li.innerText =
+            item;
+
+        list.appendChild(
+            li
+        );
+
+    }
+);
+
+}
+
+</script>
+
+
+</body>
+
+</html>
